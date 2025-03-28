@@ -1,14 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, clearCart } from '../features/cartSlice';
-import {Card, CardContent, Typography, Button, List, ListItem, ListItemText, Link, Box} from
+import {Card, CardContent, Typography, Button, List, ListItem, ListItemText, Link, Box, useTheme} from
         '@mui/material';
 import { motion } from 'framer-motion';
 const Cart = () => {
     const dispatch = useDispatch();
     const { items, total } = useSelector((state) => state.cart);
+    const theme = useTheme();
+    const isDarkMode = theme.palette.mode === 'dark';
     return (
-        <Card sx={{ maxWidth: 345, margin: 2 }}>
+        <Card sx={{ maxWidth: 345, minWidth: {xs: 345, sm: 100}, margin: 2 }}>
             <CardContent>
                 <Typography variant="h6">Корзина</Typography>
                 <List>
@@ -21,13 +23,13 @@ const Cart = () => {
                         >
                             <ListItem
                                 sx={{
-                                    border: '1px solid rgba(0,0,0,0.12)',
+                                    border: `1px solid ${theme.palette.divider}`,
                                     borderRadius: 1,
                                     mb: 1,
-                                    background: 'white',
+                                    backgroundColor: theme.palette.background.default,
                                     boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
                                     '&:hover': {
-                                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                                        boxShadow: theme.shadows[2] // Тень при наведении
                                     }
                                 }}
                             >
@@ -36,8 +38,16 @@ const Cart = () => {
                                     secondary={`${item.quantity} x ${item.price}$`}
                                     sx = {{margin: 2}}
                                 />
-                                <Button onClick={() =>
-                                    dispatch(removeFromCart(item))}>Удалить</Button>
+                                <Button
+                                    onClick={() => dispatch(removeFromCart(item))}
+                                    variant="contained"
+                                    sx={{
+                                        backgroundColor: isDarkMode ? '#9c27b0' : undefined,
+                                        '&:hover': {
+                                            backgroundColor: isDarkMode ? '#7b1fa2' : undefined,
+                                        }
+                                    }}
+                                >Удалить</Button>
                             </ListItem>
                         </motion.div>
                     ))}
